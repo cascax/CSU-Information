@@ -1,4 +1,12 @@
 <?php
+
+namespace CSUInformation;
+
+use CSUInformation\Exception\CurlException;
+use CSUInformation\Exception\LoginException;
+use CSUInformation\Exception\SessionException;
+use CSUInformation\Exception\NoSessionException;
+
 /**
 * 个人资金发放信息
 */
@@ -35,15 +43,15 @@ class Salary {
         $error = curl_error($curl);
         curl_close ($curl);
         if($errno)
-            throw new Exception("Curl Error: ({$errno}) {$error}", 3);
+            throw new CurlException($errno, $error);
         if(strpos($result, '302 Found') === false) {
             // 登陆失败
             preg_match("/script>alert\('([^']+)'/", $result, $loginError);
-            throw new Exception("Error Login: " . $loginError[1], 1);
+            throw new LoginException($loginError[1]);
         }
         // 获取登陆后的session字符串
         if(! preg_match("/ASP.NET_SessionId=(\w+)/", $result, $session))
-            throw new Exception("Error getting session", 1);
+            throw new SessionException();
         $this->session = $session[1];
     }
 
@@ -53,7 +61,7 @@ class Salary {
      */
     function getSalary() {
         if(empty($this->session))
-            throw new Exception("No session. Maybe need login", 2);
+            throw new NoSessionException();
 
         $url = 'http://infoport.its.csu.edu.cn:807/ywbl_zzffb_cx.aspx';
         $header = array(
@@ -71,7 +79,7 @@ class Salary {
         $error = curl_error($curl);
         curl_close ($curl);
         if($errno)
-            throw new Exception("Curl Error: ({$errno}) {$error}", 3);
+            throw new CurlException($errno, $error);
         $result = str_replace('&nbsp;', '', $result);
 
         if(! preg_match_all("/(?<=<td>)[^<]*(?=<\/td>)/", $result, $content))

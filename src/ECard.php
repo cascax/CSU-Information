@@ -1,4 +1,13 @@
 <?php
+
+namespace CSUInformation;
+
+use CSUInformation\Exception\CurlException;
+use CSUInformation\Exception\LoginException;
+use CSUInformation\Exception\SessionException;
+use CSUInformation\Exception\NoSessionException;
+use CSUInformation\Exception\ParseException;
+
 /**
  * 校园卡查询系统
  */
@@ -33,15 +42,15 @@ class ECard {
         $error = curl_error($curl);
         curl_close ( $curl );
         if($errno)
-            throw new Exception("Curl Error: ({$errno}) {$error}", 3);
+            throw new CurlException($errno, $error);
         if(strpos($result, '信息提示') > 0) {
             // 登陆失败
             preg_match('/class="biaotou" >([^<]+)</', $result, $loginError);
-            throw new Exception("Error Login: " . $loginError[1], 1);
+            throw new LoginException($loginError[1]);
         }
         // 匹配session字符串
         if(! preg_match('/JSESSIONID=(.+);/', $result, $session))
-            throw new Exception('Error getting session', 1);
+            throw new SessionException();
         $this->header = array(
                 "Cookie: JSESSIONID=" . $session[1]
             );
@@ -70,7 +79,7 @@ class ECard {
      */
     function getToday() {
         if(empty($this->header))
-            throw new Exception("No session. Maybe need login", 2);
+            throw new NoSessionException();
         
         $curl = curl_init ();
         $url = "http://ecard.csu.edu.cn/accounttodatTrjnObject.action";
@@ -88,7 +97,7 @@ class ECard {
         $error = curl_error($curl);
         curl_close ( $curl );
         if($errno)
-            throw new Exception("Curl Error: ({$errno}) {$error}", 3);
+            throw new CurlException($errno, $error);
         return $this->parseTable($result);
     }
     /**
@@ -100,7 +109,7 @@ class ECard {
     private function getContinue($continue='', $data='') {
         $result = $this->getHistoryHtml($continue, $data);
         if(! preg_match('/__continue=(\w+)"/', $result, $continue))
-            throw new Exception("Error finding the '__continue' url", 4);
+            throw new ParseException("Error finding the '__continue' url");
         return $continue[1];
     }
     /**
@@ -111,7 +120,7 @@ class ECard {
      */
     private function getHistoryHtml($continue='', $data='') {
         if(empty($this->header))
-            throw new Exception("No session. Maybe need login", 2);
+            throw new NoSessionException();
         if($continue)
             $continue = '?__continue=' . $continue;
         $url = "http://ecard.csu.edu.cn/accounthisTrjn.action" . $continue;
@@ -130,7 +139,7 @@ class ECard {
         $error = curl_error($curl);
         curl_close ( $curl );
         if($errno)
-            throw new Exception("Curl Error: ({$errno}) {$error}", 3);
+            throw new CurlException($errno, $error);
         return $result;
     }
     /**

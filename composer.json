@@ -1,0 +1,18 @@
+{
+    "name": "mcxr4299/csu-information",
+    "description": "The CSU's information getting crawler.",
+    "type": "library",
+    "license": "GPL 2.0",
+    "authors": [
+        {
+            "name": "Ma Cheng",
+            "email": "mcxr4299@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "CSUInformation\\": "src/"
+        }
+    }
+}

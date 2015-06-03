@@ -1,4 +1,9 @@
 <?php
+
+namespace CSUInformation;
+
+use CSUInformation\Exception\CurlException;
+
 /*
  * 校内通告类
  * 抓取校内通告列为图文消息
@@ -38,12 +43,14 @@ class Announce {
         $error = curl_error($curl);
         curl_close ( $curl );
         if($errno) {
-            throw new Exception("Curl Error: ({$errno}) {$error}", 3);
+            throw new CurlException($errno, $error);
         }
 
-        $content = str_replace ( '<img style="border:0px;" alt="" src="../../Content/images/form/release/new.gif" />', '', $html ); // 去掉img
+        // 去掉img 获取记录数
+        $content = str_replace ( '<img style="border:0px;" alt="" src="../../Content/images/form/release/new.gif" />', '', $html );
         $regCount = preg_match_all ( "/open \('\/Home\/Release_TZTG_zd\/(\w{32})'[^>]+title='\[([^\]]*)\]([^']+)'>(?:[^\/]+\/){4}[^\/]+(\d{4}\/\d+\/\d+)\s*</", $content, $ret );
         $count = $count > $regCount ? $regCount : $count;
+        // 生成记录数组
         $items = array ();
         for($i = 0; $i < $count; $i ++) {
             $items [$i] = array (
@@ -76,14 +83,16 @@ class Announce {
         $error = curl_error($curl);
         curl_close ( $curl );
         if($errno) {
-            throw new Exception("Curl Error: ({$errno}) {$error}", 3);
+            throw new CurlException($errno, $error);
         }
 
+        // 图片地址
         if(preg_match ( '/<img[^>]+src="(.+)"/', $html, $image ))
             $image = self::$realUrl . $image[1];
         else
             $image = '';
 
+        // 描述
         if(preg_match ( '/为丰富[\s\S]+观看。/', $html, $desc )) {
             $desc = preg_replace ( '/<[^>]+>/', '', $desc[0] );
             preg_match ( '/\d+月\d+日/', $desc, $date );
@@ -91,6 +100,7 @@ class Announce {
             $desc = '详情点击进入。';
         $desc .= ' - 发布日期 ' . $items[0]['date'];
 
+        // 组合标题
         if(! $date[0]) $date[0] = '';
         if(preg_match ( '/《(.+)》/', $html, $title ))
             $title = $title[0] . $date[0];
@@ -118,10 +128,10 @@ class Announce {
         $error = curl_error($curl);
         curl_close ( $curl );
         if($errno) {
-            throw new Exception("Curl Error: ({$errno}) {$error}", 3);
+            throw new CurlException($errno, $error);
         }
 
-        $content = str_replace ( '<img style="border:0px;" alt="" src="../../Content/images/form/release/new.gif" />', '', $html ); // 去掉img
+        $content = str_replace ( '<img style="border:0px;" alt="" src="../../Content/images/form/release/new.gif" />', '', $html );
         preg_match_all ( "/open \('\/Home\/Release_TZTG_zd\/(\w{32})'[^>]+title='\[校团委\]([^']+)'>(?:[^\/]+\/){4}[^\/]+(\d{4}\/\d+\/\d+)\s*</", $content, $ret );
         $items = array();
         $count = count($ret[1]);
