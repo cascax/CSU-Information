@@ -9,6 +9,6 @@ class SessionException extends \Exception
 {
     function __construct()
     {
-        parent::__construct("Error getting session", 2);
+        parent::__construct("Error getting session using the pattern", 2);
     }
 }

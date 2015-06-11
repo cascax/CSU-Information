@@ -3,15 +3,13 @@
 namespace CSUInformation;
 
 use CSUInformation\Exception\CurlException;
-use CSUInformation\Exception\LoginException;
-use CSUInformation\Exception\SessionException;
 use CSUInformation\Exception\NoSessionException;
 use CSUInformation\Exception\ParseException;
 
 /**
  * 校园卡查询系统
  */
-class ECard {
+class ECard extends BaseLoginWebsite{
     private $header;
     private $user;
 
@@ -26,33 +24,14 @@ class ECard {
      */
     function login($user, $password) {
         $this->user = $user;
-        $curl = curl_init ();
         $url = "http://ecard.csu.edu.cn/loginstudent.action";
         $data = "name={$user}&userType=1&passwd={$password}&loginType=1&rand=2181&imageField.x=38&imageField.y=8";
-        curl_setopt_array ( $curl, array (
-            CURLOPT_URL => $url,
-            CURLOPT_POST => true,
-            CURLOPT_HEADER => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POSTFIELDS => $data,
-            CURLOPT_TIMEOUT => 2
-        ) );
-        $result = mb_convert_encoding(curl_exec($curl), 'UTF-8', 'GBK');
-        $errno = curl_errno($curl);
-        $error = curl_error($curl);
-        curl_close ( $curl );
-        if($errno)
-            throw new CurlException($errno, $error);
-        if(strpos($result, '信息提示') > 0) {
-            // 登陆失败
-            preg_match('/class="biaotou" >([^<]+)</', $result, $loginError);
-            throw new LoginException($loginError[1]);
-        }
-        // 匹配session字符串
-        if(! preg_match('/JSESSIONID=(.+);/', $result, $session))
-            throw new SessionException();
+
+        $session = $this->loginGetSession($url, $data, self::JSP_PATTERN,
+            array('judge'=>'信息提示', 'pattern'=>'/class="biaotou" >([^<]+)</'),
+            'GBK');
         $this->header = array(
-                "Cookie: JSESSIONID=" . $session[1]
+                "Cookie: JSESSIONID=" . $session
             );
     }
     /**

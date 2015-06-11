@@ -3,14 +3,12 @@
 namespace CSUInformation;
 
 use CSUInformation\Exception\CurlException;
-use CSUInformation\Exception\LoginException;
-use CSUInformation\Exception\SessionException;
 use CSUInformation\Exception\NoSessionException;
 
 /**
 * 个人资金发放信息
 */
-class Salary {
+class Salary extends BaseLoginWebsite{
     private $session;
 
     function __construct($user='', $password='') {
@@ -29,30 +27,10 @@ class Salary {
         $header = array(
                 'Cookie: CheckCode=0000'
             );
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-                CURLOPT_POST => true,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HEADER => true,
-                CURLOPT_URL => $url,
-                CURLOPT_HTTPHEADER => $header,
-                CURLOPT_POSTFIELDS => $data
-            ));
-        $result = curl_exec($curl);
-        $errno = curl_errno($curl);
-        $error = curl_error($curl);
-        curl_close ($curl);
-        if($errno)
-            throw new CurlException($errno, $error);
-        if(strpos($result, '302 Found') === false) {
-            // 登陆失败
-            preg_match("/script>alert\('([^']+)'/", $result, $loginError);
-            throw new LoginException($loginError[1]);
-        }
-        // 获取登陆后的session字符串
-        if(! preg_match("/ASP.NET_SessionId=(\w+)/", $result, $session))
-            throw new SessionException();
-        $this->session = $session[1];
+
+        $this->session = $this->loginGetSession($url, $data, self::ASP_PATTERN,
+            array('judge'=>'script', 'pattern'=>"/script>alert\('([^']+)'/"),
+            'UTF-8', $header);
     }
 
     /**
