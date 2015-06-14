@@ -8,14 +8,9 @@ use CSUInformation\Exception\NoSessionException;
 class Library extends BaseLoginWebsite{
     private $session;
 
-    function __construct($user='', $password='') {
-        if(!empty($user) && !empty($password))
-            $this->login($user, $password);
-    }
-
     /**
      * 登陆
-     * @param  string $user     我的图书馆用户名
+     * @param  string $user     我的图书馆用户名 (学号)
      * @param  string $password 我的图书馆密码
      */
     function login($user, $password) {

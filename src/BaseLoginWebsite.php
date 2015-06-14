@@ -13,6 +13,13 @@ abstract class BaseLoginWebsite
 {
     const JSP_PATTERN = '/JSESSIONID=(.+?);/';
     const ASP_PATTERN = '/NET_SessionId=(.+?);/';
+
+    function __construct($user='', $password='') {
+        if(!empty($user) && !empty($password))
+            $this->login($user, $password);
+    }
+
+    function login($user, $password) {}
     
     /**
      * 登陆获取session
@@ -20,9 +27,10 @@ abstract class BaseLoginWebsite
      * @param  string $postdata post数据
      * @param  string $pattern  session获取正则
      * @param  array  $infoGet  登陆失败信息获取
-     *                          array('judge' => 存在字符串则登陆失败,
-     *                          'pattern' => 登陆失败具体信息正则模式)
-     * @param  string $encoding 网页编码方式
+     *     array('judge' => 存在字符串则登陆失败,
+     *     'pattern' => 登陆失败具体信息正则模式,
+     *     'reverse' => true是反向判断，不存在则登陆失败，false正向判断)
+     * @param  string $encode   网页编码方式
      * @param  array  $header   额外的HTTP头
      * @return string           session字符串
      */
@@ -34,6 +42,7 @@ abstract class BaseLoginWebsite
             CURLOPT_POST => true,
             CURLOPT_HEADER => true,
             CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
             CURLOPT_POSTFIELDS => $postdata,
             CURLOPT_TIMEOUT => 4
         ) );
@@ -48,13 +57,20 @@ abstract class BaseLoginWebsite
 
         // 转码
         if($encode != 'UTF-8')
-            $result = mb_convert_encoding($result, 'UTF-8', $encoding);
+            $result = mb_convert_encoding($result, 'UTF-8', $encode);
 
         // 判断登陆是否成功
-        if(strpos($result, $infoGet['judge']) > 0) {
+        if(isset($infoGet['reverse']) && $infoGet['reverse'])
+            $loginFailed = strpos($result, $infoGet['judge']) === false;
+        else
+            $loginFailed = strpos($result, $infoGet['judge']) > 0;
+        if($loginFailed) {
             // 登陆失败
-            preg_match($infoGet['pattern'], $result, $loginError);
-            throw new LoginException($loginError[1]);
+            if(isset($infoGet['pattern']) 
+                    && preg_match($infoGet['pattern'], $result, $loginError))
+                throw new LoginException($loginError[1]);
+            else
+                throw new LoginException('登陆失败');
         }
         // 匹配session字符串
         if(! preg_match($pattern, $result, $session))

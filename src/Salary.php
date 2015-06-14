@@ -11,11 +11,6 @@ use CSUInformation\Exception\NoSessionException;
 class Salary extends BaseLoginWebsite{
     private $session;
 
-    function __construct($user='', $password='') {
-        if(!empty($user) && !empty($password))
-            $this->login($user, $password);
-    }
-
     /**
      * 登陆
      * @param  string $user     校园卡账户
