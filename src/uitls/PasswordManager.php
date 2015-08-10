@@ -14,9 +14,9 @@ class PasswordManager
     public $passwordFileName = 'psd.json';
     private $json;
     
-    static function getInstance() {
+    static function getInstance($fileName = NULL) {
         if(!is_object(self::$handle))
-            self::$handle = new self();
+            self::$handle = new self($fileName);
         return self::$handle;
     }
 

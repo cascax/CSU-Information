@@ -2,6 +2,8 @@
 
 中南信息获取爬虫，获取校内信息。爬虫包括某些绕过验证码的黑科技，可利用此库实现校内信息自动获取。
 
+(由于现在迎新，所以信息门户功能失效)
+
 # 功能
 
 现在包括的功能有
@@ -28,6 +30,10 @@ require "vendor/autoload.php";
 use CSUInformation\...
 ```
 
+## 密码管理器 PasswordManager
+
+修改src/utils/psd.json，填写账户密码。使用方式见下
+
 ## 获取当月工资信息
 
 账户密码为校园卡卡号和校园卡查询密码
@@ -38,15 +44,30 @@ $t->login('124012', '123456');
 var_dump($t->getSalary());
 ```
 
+使用PasswordManager
+
+```
+$p = PasswordManager::getInstance();
+$t = new Salary($p);
+var_dump($t->getSalary());
+```
+
 ## 查看借阅图书和全部续借
 
 这里账户密码是图书馆的
 
 ```
 $t = new Library();
-$t->login('0909122723', '862633900');
+$t->login('0909122723', '123456');
 var_dump($t->getBookLoan()); // 借阅图书
 $t->renewBook(); // 全部续借
+```
+
+使用PasswordManager
+
+```
+$t = new Library($p);
+var_dump($t->getBookLoan());
 ```
 
 # License

@@ -4,15 +4,15 @@
         "cardno" : "124074"
     },
     "mycsu" : {
-        "pass" : "",
+        "pass" : "123456",
         "explain" : "中南大学信息门户"
     },
     "card" : {
-        "pass" : "",
+        "pass" : "123456",
         "explain" : "校园卡"
     },
     "library" : {
-        "pass" : "",
+        "pass" : "123456",
         "explain" : "我的图书馆"
     }
 }
