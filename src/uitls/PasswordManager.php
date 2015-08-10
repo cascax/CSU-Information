@@ -47,6 +47,10 @@ class PasswordManager
         return $this->getValue('card', 'pass', '校园卡查询密码');
     }
 
+    function getLibraryPassword() {
+        return $this->getValue('library', 'pass', '我的图书馆密码');
+    }
+
     private function getValue($title, $item, $errorName) {
         if(isset($this->json[$title][$item])
             && $this->json[$title][$item])

@@ -10,5 +10,9 @@
     "card" : {
         "pass" : "",
         "explain" : "校园卡"
+    },
+    "library" : {
+        "pass" : "",
+        "explain" : "我的图书馆"
     }
 }
