@@ -1,0 +1,14 @@
+{
+    "baseinfo" : {
+        "studentno" : "0909122723",
+        "cardno" : "124074"
+    },
+    "mycsu" : {
+        "pass" : "",
+        "explain" : "中南大学信息门户"
+    },
+    "card" : {
+        "pass" : "",
+        "explain" : "校园卡"
+    }
+}
