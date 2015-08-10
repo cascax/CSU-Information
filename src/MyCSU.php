@@ -12,6 +12,14 @@ class MyCSU extends BaseLoginWebsite
 {
     private $session;
 
+    protected function getUser() {
+        return $this->passwordManager->getStudentNumber();
+    }
+
+    protected function getPassword() {
+        return $this->passwordManager->getMyCSUPassword();
+    }
+
     /**
      * 登陆
      * @param  string $user     学号

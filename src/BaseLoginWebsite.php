@@ -5,6 +5,7 @@ namespace CSUInformation;
 use CSUInformation\Exception\CurlException;
 use CSUInformation\Exception\LoginException;
 use CSUInformation\Exception\SessionException;
+use CSUInformation\uitls\PasswordManager;
 
 /**
 * 需要登陆的网站抓取基类
@@ -13,13 +14,20 @@ abstract class BaseLoginWebsite
 {
     const JSP_PATTERN = '/JSESSIONID=(.+?);/';
     const ASP_PATTERN = '/NET_SessionId=(.+?);/';
+    protected $passwordManager;
 
-    function __construct($user='', $password='') {
-        if(!empty($user) && !empty($password))
-            $this->login($user, $password);
+    function __construct(PasswordManager $passwordManager = NULL) {
+        if($passwordManager) {
+            $this->passwordManager = $passwordManager;
+            $this->login($this->getUser(), $this->getPassword());
+        }
     }
 
     function login($user, $password) {}
+
+    protected function getUser() {}
+
+    protected function getPassword() {}
     
     /**
      * 登陆获取session

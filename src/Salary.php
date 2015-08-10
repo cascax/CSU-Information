@@ -11,6 +11,14 @@ use CSUInformation\Exception\NoSessionException;
 class Salary extends BaseLoginWebsite{
     private $session;
 
+    protected function getUser() {
+        return $this->passwordManager->getCardNumber();
+    }
+
+    protected function getPassword() {
+        return $this->passwordManager->getCardPassword();
+    }
+
     /**
      * 登陆
      * @param  string $user     校园卡账户

@@ -12,6 +12,8 @@ use CSUInformation\Exception\LoginException;
 class EducationalAdmin extends BaseLoginWebsite
 {
     private $session;
+
+    function __construct() {}
     
     /**
      * 从信息门户登陆教务
@@ -19,7 +21,8 @@ class EducationalAdmin extends BaseLoginWebsite
      * @param  string $password 信息门户密码
      */
     function loginFromMyCSU($user, $password) {
-        $mycsu = new MyCSU($user, $password);
+        $mycsu = new MyCSU();
+        $mycsu->login($user, $password);
         $data = $mycsu->gotoJw();
         $url = 'http://csujwc.its.csu.edu.cn/cas.zndx.aspx';
         $header = array(

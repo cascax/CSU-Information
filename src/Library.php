@@ -8,6 +8,14 @@ use CSUInformation\Exception\NoSessionException;
 class Library extends BaseLoginWebsite{
     private $session;
 
+    protected function getUser() {
+        return $this->passwordManager->getStudentNumber();
+    }
+
+    protected function getPassword() {
+        return $this->passwordManager->getLibraryPassword();
+    }
+    
     /**
      * 登陆
      * @param  string $user     我的图书馆用户名 (学号)

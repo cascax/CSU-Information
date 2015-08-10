@@ -13,6 +13,14 @@ class ECard extends BaseLoginWebsite{
     private $header;
     private $user;
 
+    protected function getUser() {
+        return $this->passwordManager->getCardNumber();
+    }
+
+    protected function getPassword() {
+        return $this->passwordManager->getCardPassword();
+    }
+
     /**
      * 登陆
      * @param  string $user     校园卡账户
