@@ -5,6 +5,7 @@ namespace CSUInformation;
 use CSUInformation\Exception\NoSessionException;
 use CSUInformation\Exception\CurlException;
 use CSUInformation\Exception\LoginException;
+use CSUInformation\uitls\PasswordManager;
 
 /**
 * 
@@ -13,7 +14,15 @@ class EducationalAdmin extends BaseLoginWebsite
 {
     private $session;
 
-    function __construct() {}
+    function __construct(PasswordManager $passwordManager = NULL) {
+        if($passwordManager) {
+            $this->passwordManager = $passwordManager;
+            $this->loginFromMyCSU(
+                    $this->passwordManager->getStudentNumber(),
+                    $this->passwordManager->getMyCSUPassword()
+                );
+        }
+    }
     
     /**
      * 从信息门户登陆教务

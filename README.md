@@ -2,8 +2,6 @@
 
 中南信息获取爬虫，获取校内信息。爬虫包括某些绕过验证码的黑科技，可利用此库实现校内信息自动获取。
 
-(由于现在迎新，所以信息门户功能失效)
-
 # 功能
 
 现在包括的功能有
@@ -68,6 +66,25 @@ $t->renewBook(); // 全部续借
 ```
 $t = new Library($p);
 var_dump($t->getBookLoan());
+```
+
+## 查看个人信息
+
+(由于现在迎新，所以信息门户相关功能可能失效)
+
+使用信息门户账户密码获取
+
+```
+$t = new EducationalAdmin();
+$t->loginFromMyCSU('0909122723', '123456');
+print_r($t->getMyInfo());
+```
+
+使用PasswordManager获取
+
+```
+$t = new EducationalAdmin($p);
+print_r($t->getMyInfo());
 ```
 
 # License
