@@ -5,7 +5,7 @@ namespace CSUInformation\Exception;
 /**
 * json解析异常
 */
-class JSONException extends \Exception
+class JSONException extends CSUInfoException
 {
     function __construct()
     {

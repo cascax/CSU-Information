@@ -5,7 +5,7 @@ namespace CSUInformation\Exception;
 /**
 * 登陆失败
 */
-class LoginException extends \Exception
+class LoginException extends CSUInfoException
 {
     public $error;
     function __construct($error)

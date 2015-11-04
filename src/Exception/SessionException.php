@@ -5,7 +5,7 @@ namespace CSUInformation\Exception;
 /**
 * Session异常
 */
-class SessionException extends \Exception
+class SessionException extends CSUInfoException
 {
     function __construct()
     {

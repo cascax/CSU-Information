@@ -5,7 +5,7 @@ namespace CSUInformation\Exception;
 /**
 * CURL连接异常
 */
-class CurlException extends \Exception
+class CurlException extends CSUInfoException
 {
     public $errno;
     public $error;
