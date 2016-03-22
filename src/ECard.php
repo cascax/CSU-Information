@@ -40,14 +40,17 @@ class ECard extends BaseLoginWebsite{
     }
     /**
      * 历史流水
+     * 
      * @param  string $beginDate 开始日期 格式:20150601
      * @param  string $endDate   结束日期
+     * @param  string $type      交易类型
+     *         all查询全部 13存款 14取款 15消费 16转帐 17补助 18扣款
      * @return array             记录
      */
-    function getHistory($beginDate, $endDate) {
+    function getHistory($beginDate, $endDate, $type = 'all') {
         $continue = $this->getContinue();
         
-        $data = "account={$this->user}&inputObject=all&Submit=+%C8%B7+%B6%A8+";
+        $data = "account={$this->user}&inputObject={$type}&Submit=+%C8%B7+%B6%A8+";
         $continue = $this->getContinue($continue, $data);
         
         $data = "inputStartDate={$beginDate}&inputEndDate={$endDate}";
